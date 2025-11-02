@@ -1,0 +1,7 @@
+{
+  "name": "Backup of Go Online",
+  "description": "An AI-powered website builder that allows users to create and customize a professional website in minutes. Features include template selection, content generation from a brochure or text prompt, AI-powered image generation and suggestions, and real-time editing with a live preview.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
