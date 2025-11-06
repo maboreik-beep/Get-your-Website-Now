@@ -30,7 +30,7 @@ export const THEME_COLORS = [
 ];
 
 // Updated logo Base64 for better visibility on dark backgrounds (white with green play button)
-export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1seT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+R088L3RleHQ+CiAgPHRleHQgeD0iNzAiIHk9IjMyIiBmb250LWZhbWlyeT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+T05MSU5FPC90ZXh0PgogIDxwYXRoIGQ9Ik0xNDcuMzQ5IDMxLjYzMzFMMTY2Ljg2NCAyNS41NzE0QzE3MC4zNTYgMjQuMzY3MiAxNzIuNTg2IDI4LjA5NzEgMTcwLjUxMiAzMS4zMDkxTDE2Ny4wNzcgMzYuNDExTDE3MC41MzYgNDEuNTI0NUS,11NS4xOSA0NC43NDUgMTcwLjM1NyA0OC40ODU4IDE2Ni44NzAgNDcuMjcyNkwxNDcuMzU1IDQxLjI2NjJMMTQ3LjM0OSAzMS42MzMxWiAiIGZpbGw9IiNFNjM1Ii8+CiAgPHRleHQgeD0iMzIiIHk9IjQ0IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iOHB4Ij53d3cuZ29ubGluZS5jbG91ZDwvdGV4dD4KPC9zdmc+`;
+export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1seT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+R088L3RleHQ+CiAgPHRleHQgeD0iNzAiIHk9IjMyIiBmb250LWZhbWlyeT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+T05MSU5FPC90ZXh0PgogIDxwYXRoIGQ9Ik0xNDcuMzQ5IDMxLjYzMzFMMTY2Ljg2NCAyNS41NzE0QzE3MC4zNTYgMjQuMzY3MiAxNzIuNTg2IDI4LjA5NzEgMTcwLjUxMiAzMS4zMDkxTDE2Ny4wNzcgMzYuNDExTDE3MC41MzYgNDEuNTI0NUS,11NS4x nineteen 0dg0Y8R0Z 44.745IDE3MC4zNTcgNDguNDg1OCAxNjYuODcwIDQ3LjI3MjZMMTQ3LjM1NSA0MS4yNjYyTDE0Ny4zNDkgMzEuNjMzMVogIiBmaWxsPSIjRTYzNTMiLz4KICA8dGV4dCB4PSIzMiIgeT0iNDQiIGZvbnQtZmFtaWx5PSJJbnRlZXIiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iOHB4Ij53d3cuZ29ubGluZS5jbG91ZDwvdGV4dD4KPC9zdmc+`;
 
 export const Logo: React.FC<{ className?: string }> = ({ className }) => (
     <img src={GOONLINE_LOGO_BASE64} alt="Go Online Logo" className={className} />
@@ -657,7 +657,9 @@ const createContactSection = (companyName: Record<string, string>, theme: 'light
     theme,
 });
 
-const createFooterSection = (companyName: Record<string, string>, theme: 'light' | 'dark', index: number = 0, defaultLang: string, t: (key: string) => string): FooterSection => ({
+// FIX: Updated the type signature of the 't' function in createFooterSection
+// to match the broader LanguageContextType, preventing potential type inference issues.
+const createFooterSection = (companyName: Record<string, string>, theme: 'light' | 'dark', index: number = 0, defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): FooterSection => ({
     id: generateId(`footer-${index}`),
     type: 'Footer',
     enabled: true,
