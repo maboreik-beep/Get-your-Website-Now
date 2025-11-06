@@ -30,7 +30,8 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ value, onChange, prompt
         if (!prompt) return;
         setIsLoading(true);
         try {
-            const fullPrompt = `${prompt}, ${promptContext}. cinematic, professional photography, high detail.`;
+            // Refined prompt to incorporate promptContext more explicitly
+            const fullPrompt = `A professional, high-quality image suitable for a website. Context: ${promptContext}. Subject: ${prompt}. Style: cinematic, photorealistic, high detail, rule of thirds.`;
             const imageUrl = await generateImage(fullPrompt, aspectRatio);
             onChange(imageUrl);
             // Optionally close generator after successful generation

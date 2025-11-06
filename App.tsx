@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Website } from './types';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
@@ -82,7 +83,7 @@ const AppContent: React.FC = () => {
         setView('landing');
       }
     }
-  }, [user, loading, sessionWebsite, editingWebsite, view]);
+  }, [user, loading, sessionWebsite, editingWebsite, view, t]); // Added 't' to dependencies
 
   const handleStartBuilding = (newWebsite: Website) => {
     setSessionWebsite(newWebsite);
@@ -142,9 +143,9 @@ const AppContent: React.FC = () => {
   const websiteForEditor = editingWebsite || sessionWebsite;
   // Ensure setWebsiteForEditor correctly sets the relevant state variable
   const setWebsiteForEditor = (newValue: React.SetStateAction<Website | null>) => {
-    if (editingWebsite) {
+    if (user) { // If user is logged in, manage editingWebsite
       setEditingWebsite(newValue);
-    } else {
+    } else { // If guest, manage sessionWebsite
       setSessionWebsite(newValue);
     }
   };
@@ -170,10 +171,7 @@ const AppContent: React.FC = () => {
   }
 
   if (view === 'auth') {
-    return <AuthPage onAuthSuccess={() => {
-        // The useEffect hook will handle the logic after auth succeeds (e.g., saving sessionWebsite).
-        // No explicit setView here, let useEffect decide the next view based on existing state.
-    }} />;
+    return <AuthPage onAuthSuccess={() => setView('dashboard')} />; // FIX: Explicitly set view to dashboard on auth success
   }
 
   return <LandingPage onStartBuilding={handleStartBuilding} onGoToMyWebsites={handleGoToMyWebsites} />;
@@ -190,3 +188,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+    

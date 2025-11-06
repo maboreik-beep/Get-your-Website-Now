@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import {
   Industry, Page, Section,
@@ -15,7 +16,7 @@ export const INDUSTRIES: Industry[] = [
   'Design Agency', 'Charity', 'Hotel', 'Business Services', 'Portfolio', 'Interior Designer', 'Online Store',
   'Fashion', 'Furniture', 'Real Estate', 'Construction', 'Marketing',
   'Designer', 'Photographer', 'Restaurant', 'Store', 'Logistics',
-  'Lawyer', 'Medical', 'Technology', 'Blog', 'Events', 'Child Care', 'Industrial', 'Security'
+  'Lawyer', 'Medical', 'Technology', 'Blog', 'Events' , 'Child Care' , 'Industrial' , 'Security'
 ];
 
 export const THEME_COLORS = [
@@ -30,7 +31,7 @@ export const THEME_COLORS = [
 ];
 
 // Updated logo Base64 for better visibility on dark backgrounds (white with green play button)
-export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1seT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+R088L3RleHQ+CiAgPHRleHQgeD0iNzAiIHk9IjMyIiBmb250LWZhbWlyeT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+T05MSU5FPC90ZXh0PgogIDxwYXRoIGQ9Ik0xNDcuMzQ5IDMxLjYzMzFMMTY2Ljg2NCAyNS41NzE0QzE3MC4zNTYgMjQuMzY3MiAxNzIuNTg2IDI4LjA5NzEgMTcwLjUxMiAzMS4zMDkxTDE2Ny4wNzcgMzYuNDExTDE3MC41MzYgNDEuNTI0NUS,11NS4x nineteen 0dg0Y8R0Z 44.745IDE3MC4zNTcgNDguNDg1OCAxNjYuODcwIDQ3LjI3MjZMMTQ3LjM1NSA0MS4yNjYyTDE0Ny4zNDkgMzEuNjMzMVogIiBmaWxsPSIjRTYzNTMiLz4KICA8dGV4dCB4PSIzMiIgeT0iNDQiIGZvbnQtZmFtaWx5PSJJbnRlZXIiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iOHB4Ij53d3cuZ29ubGluZS5jbG91ZDwvdGV4dD4KPC9zdmc+`;
+export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1pbHk9IkludGVyIiBmb250LXdlaWdodD0iODAwIiBmb250LXNpemU9IjI0cHgiPkdPMC90ZXh0PgogIDx0ZXh0IHg9IjcwIiB5PSIzMiIgZm9udC1mYW1pbHk9IkludGVyIiBmb250LXdlaWdodD0iODAwIiBmb250LXNpemU9IjI0cHgiPk9OTElORTwvdGV4dD4KICA8cG9seWdvbiBwb2ludHM9IjE3NSwyMiAxNzUsNDIgMTk1LDMyIiBmaWxsPSIjQTM2MzUiLz4KICA8dGV4dCB4PSIzMiIgY3k9IjQ0IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iOHB4Ij53d3cuZ29ubGluZS5jbG91ZDwvdGV4dD4KPC9zdmc+`;
 
 export const Logo: React.FC<{ className?: string }> = ({ className }) => (
     <img src={GOONLINE_LOGO_BASE64} alt="Go Online Logo" className={className} />
@@ -72,7 +73,7 @@ export const ICONS = {
   Twitter: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.254 5.309c-.779.345-1.635.578-2.529.682.898-.539 1.59-1.396 1.916-2.414-.843.5-1.782.866-2.774 1.063C18.17 4.12 16.94 3.5 15.612 3.5c-2.413 0-4.373 1.954-4.373 4.373 0 .343.039.677.113.992-3.638-.182-6.864-1.928-9.023-4.577-.376.64-.593 1.387-.593 2.185 0 1.517.771 2.858 1.942 3.646-.718-.022-1.393-.22-1.983-.548v.056c0 2.103 1.498 3.856 3.483 4.256-.363.099-.744.151-1.137.151-.278 0-.547-.026-.81-.077.553 1.724 2.152 2.977 4.04 3.011-1.488 1.164-3.355 1.859-5.397 1.859-.352 0-.699-.021-1.04-.061 1.922 1.233 4.195 1.954 6.643 1.954 8.274 0 12.802-6.85 12.802-12.802 0-.195-.004-.39-.013-.584.881-.632 1.64-1.42 2.246-2.327z"/></svg>,
   Linkedin: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.23 0H1.77C.792 0 0 .774 0 1.734v20.532c0 .96.792 1.734 1.77 1.734h20.46c.978 0 1.77-.774 1.77-1.734V1.734c0-.96-.792-1.734-1.77-1.734zM7.3 20.25H3.6V8.25h3.7v12zm-1.85-13.6c-1.2 0-2.18-.95-2.18-2.12C3.27 3.38 4.25 2.43 5.45 2.43c1.2 0 2.18.95 2.18 2.12 0 1.17-.98 2.1-2.18 2.1zM20.48 20.25h-3.7V14.5c0-1.3-.02-2.96-1.8-2.96-1.82 0-2.1 1.4-2.1 2.86v5.85h-3.7V8.25h3.55v1.65h.05c.49-.9 1.68-1.85 3.45-1.85 3.69 0 4.37 2.43 4.37 5.58v6.62h.01z"/></svg>,
   Facebook: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.35C0 23.407.593 24 1.325 24h11.334V14.61H9.68V11.026h2.979V8.402c0-2.966 1.812-4.582 4.455-4.582 1.309 0 2.436.097 2.768.14V7.47h-1.834c-1.448 0-1.733.688-1.733 1.702v2.106h3.873l-.61 3.584h-3.263V24h6.046c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>,
-  Instagram: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.071 1.17.055 1.805.249 2.227.424.607.246 1.058.799 1.258 1.41.173.47.319.864.424 2.227.059 1.266.071 1.646.071 4.85s-.012 3.584-.071 4.85c-.055 1.17-.249 1.805-.424 2.227-.246.607-.799 1.058-1.41 1.258-.173.47-.319.864-.424 2.227-.059 1.266-.071 1.646-.071 4.85s.012 3.584.071 4.85c.055 1.17.249 1.805.424 2.227.246.607.799 1.058 1.41-1.258.47-.173.864.319 2.227-.424 1.266-.059 1.646-.071 4.85-.071zm0-2.163c-3.265 0-3.693.013-4.994.072-1.262.059-2.105.275-2.825.556-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s.013 3.693.072 4.994c.059 1.262.275 2.105.556 2.825 0 0 .978.465 2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994c-.059 1.262-.275 2.105-.556 2.825-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994zM12 6.865c-2.831 0-5.135 2.304-5.135 5.135s2.304 5.135 5.135 5.135 5.135-2.304 5.135-5.135-2.304-5.135-5.135-5.135zm0 8.571c-1.996 0-3.436-1.44-3.436-3.436s1.44-3.436 3.436-3.436 3.436 1.44 3.436 3.436-1.44 3.436-3.436 3.436zm6.807-9.646c0-.85-.688-1.538-1.538-1.538-.849 0-1.538.688-1.538 1.538 0 .849.688 1.538 1.538 1.538.85 0 1.538-.688 1.538-1.538z"/></svg>,
+  Instagram: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.071 1.17.055 1.805.249 2.227.424.607.246 1.058.799 1.258 1.41.173.47.319.864.424 2.227.059 1.266.071 1.646.071 4.85s-.012 3.584-.071 4.85c-.055 1.17-.249 1.805-.424 2.227-.246.607-.799 1.058-1.41 1.258-.173.47-.319.864-.424 2.227-.059 1.266-.071 1.646-.071 4.85s.013 3.584.072 4.85c.055 1.17.249 1.805.424 2.227.246.607.799 1.058 1.41-1.258.47-.173.864.319 2.227-.424 1.266-.059 1.646-.071 4.85-.071zm0-2.163c-3.265 0-3.693.013-4.994.072-1.262.059-2.105.275-2.825.556-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s.013 3.693.072 4.994c.059 1.262.275 2.105.556 2.825 0 0 .978.465 2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994c-.059 1.262-.275 2.105-.556 2.825-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994zM12 6.865c-2.831 0-5.135 2.304-5.135 5.135s2.304 5.135 5.135 5.135 5.135-2.304 5.135-5.135-2.304-5.135-5.135-5.135zm0 8.571c-1.996 0-3.436-1.44-3.436-3.436s1.44-3.436 3.436-3.436 3.436 1.44 3.436 3.436-1.44 3.436-3.436 3.436zm6.807-9.646c0-.85-.688-1.538-1.538-1.538-.849 0-1.538.688-1.538 1.538 0 .849.688 1.538 1.538 1.538.85 0 1.538-.688 1.538-1.538z"/></svg>,
 };
 
 // Generic Icon Component
@@ -468,8 +469,10 @@ const createAboutSection = (companyName: Record<string, string>, industry: Indus
   id: generateId(`about-${index}`),
   type: 'About',
   enabled: true,
-  title: { [defaultLang]: `About ${companyName[defaultLang]}` },
-  text: { [defaultLang]: `With years of experience in the ${industry} sector, ${companyName[defaultLang]} is dedicated to providing exceptional solutions. Our mission is to empower businesses and individuals alike through innovation, quality, and a commitment to excellence. We believe in building lasting relationships with our clients, understanding their unique needs, and delivering results that exceed expectations.` },
+  // FIX: Explicitly assert the type of 'title' and 'text' to resolve potential subtle type inference issues,
+  // ensuring they are treated as Record<string, string> where expected.
+  title: { [defaultLang]: `About ${companyName[defaultLang]}` } as Record<string, string>,
+  text: { [defaultLang]: `With years of experience in the ${industry} sector, ${companyName[defaultLang]} is dedicated to providing exceptional solutions. Our mission is to empower businesses and individuals alike through innovation, quality, and a commitment to excellence. We believe in building lasting relationships with our clients, understanding their unique needs, and delivering results that exceed expectations.` } as Record<string, string>,
   image: getRandomFixedImage('about-image'), // Using fixed image
   layout,
   theme,
@@ -718,7 +721,7 @@ export const createDefaultSection = (
 
 // --- Page Templates ---
 export const PAGE_TEMPLATES = {
-    'Home': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Home': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'home',
         name: { [defaultLang]: 'Home' },
         sections: [
@@ -731,7 +734,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'About Us': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'About Us': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'about-us',
         name: { [defaultLang]: 'About Us' },
         sections: [
@@ -742,7 +745,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'Services': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Services': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'services',
         name: { [defaultLang]: 'Services' },
         sections: [
@@ -753,7 +756,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'Portfolio': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Portfolio': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'portfolio',
         name: { [defaultLang]: 'Portfolio' },
         sections: [
@@ -763,7 +766,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'Contact': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Contact': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'contact',
         name: { [defaultLang]: 'Contact' },
         sections: [
@@ -772,7 +775,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'Blog': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Blog': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
         id: 'blog',
         name: { [defaultLang]: 'Blog' },
         sections: [
@@ -782,7 +785,7 @@ export const PAGE_TEMPLATES = {
             createFooterSection(companyName, theme, 0, defaultLang, t),
         ],
     }),
-    'Products': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Products': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
       id: 'products',
       name: { [defaultLang]: 'Products' },
       sections: [
@@ -792,7 +795,7 @@ export const PAGE_TEMPLATES = {
           createFooterSection(companyName, theme, 0, defaultLang, t),
       ],
     }),
-    'Pricing': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Pricing': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
       id: 'pricing',
       name: { [defaultLang]: 'Pricing' },
       sections: [
@@ -802,7 +805,7 @@ export const PAGE_TEMPLATES = {
           createFooterSection(companyName, theme, 0, defaultLang, t),
       ],
     }),
-    'Gallery': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'Gallery': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
       id: 'gallery',
       name: { [defaultLang]: 'Gallery' },
       sections: [
@@ -812,7 +815,7 @@ export const PAGE_TEMPLATES = {
           createFooterSection(companyName, theme, 0, defaultLang, t),
       ],
     }),
-    'FAQ': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string) => string): Page => ({
+    'FAQ': (companyName: Record<string, string>, industry: Industry, theme: 'light' | 'dark', defaultLang: string, t: (key: string, variables?: Record<string, string>) => string): Page => ({
       id: 'faq',
       name: { [defaultLang]: 'FAQ' },
       sections: [
@@ -827,7 +830,8 @@ export const PAGE_TEMPLATES = {
 export const INDUSTRY_TEMPLATES: {
   [key in Industry]: {
     defaultThemeColor: string;
-    template: (theme: 'light' | 'dark', companyName: Record<string, string>, defaultLang: string, t: (key: string) => string) => Page[];
+    // FIX: Updated the type signature of the 't' function in INDUSTRY_TEMPLATES
+    template: (theme: 'light' | 'dark', companyName: Record<string, string>, defaultLang: string, t: (key: string, variables?: Record<string, string>) => string) => Page[];
   };
 } = {
   'Design Agency': {
@@ -1097,6 +1101,8 @@ export const INDUSTRY_TEMPLATES: {
       PAGE_TEMPLATES.Services(companyName, 'Security', theme, defaultLang, t),
       PAGE_TEMPLATES.Pricing(companyName, 'Security', theme, defaultLang, t),
       PAGE_TEMPLATES.Contact(companyName, 'Security', theme, defaultLang, t),
-    ].map(p => ({ ...p, id: p.id === 'home' ? 'home' : generateId(p.id), name: { [defaultLang]: p.name[defaultLang] || '' } })),
+    ].map(p => ({ ...p, id: p.id === 'home' ? 'home' : generateId(p.id), name: { [defaultLang]: p.name[defaultLang] || '' } }
+    )),
   },
 };
+    

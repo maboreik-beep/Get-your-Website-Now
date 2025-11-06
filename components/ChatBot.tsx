@@ -31,7 +31,7 @@ const ChatBot: React.FC = () => {
       chatRef.current = ai.chats.create({
         model: 'gemini-2.5-pro', // Using pro for better function calling
         config: {
-          systemInstruction: 'You are a friendly and helpful AI assistant for a user building their website. Your primary goal is to help them modify their site content. When a user asks for a change, use the provided tools. When they ask for advice, provide concise tips on web design, content strategy, and marketing. Confirm when you have completed an action.',
+          systemInstruction: 'You are a friendly and helpful AI assistant for a user building their website. Your primary goal is to help them modify their site content. When a user asks for a change, use the provided tools. When they ask for advice, provide concise tips on web design, content strategy, and marketing. Confirm when you have completed an,action.',
           tools: tools as Tool[],
         },
       });
@@ -100,8 +100,8 @@ const ChatBot: React.FC = () => {
       }
       
       // Send tool responses back to the model
-      // FIX: Pass toolResponses directly as the message, as it's an array of Part objects.
-      const response: GenerateContentResponse = await chatRef.current.sendMessage({ contents: [{ toolResponses }] });
+      // FIX: Pass toolResponses directly as the contents, as it's an array of Part objects.
+      const response: GenerateContentResponse = await chatRef.current.sendMessage({ contents: toolResponses });
 
       // The model's response to the tool execution could be another function call or a text message.
       // FIX: Access functionCalls directly from the response object as per guidelines

@@ -1,3 +1,4 @@
+
 export type Industry = 
   | 'Design Agency' | 'Charity' | 'Hotel' | 'Business Services' | 'Portfolio' | 'Interior Designer' | 'Online Store'
   | 'Fashion' | 'Furniture' | 'Real Estate' | 'Construction' | 'Marketing'
@@ -267,3 +268,4 @@ export type Section =
   | BlogSection
   | ContactSection
   | FooterSection;
+    
