@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useCallback } from 'react';
 import { Icon } from '../constants';
 import { generateImage } from '../services/geminiService';

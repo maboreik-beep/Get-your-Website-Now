@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Industry } from '../types';
 import { Icon, INDUSTRIES, useLanguage, LANGUAGES, resetImageIndexMap } from '../constants'; // Import useLanguage, LANGUAGES, and resetImageIndexMap

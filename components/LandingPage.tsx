@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Logo, INDUSTRY_TEMPLATES, useLanguage, LANGUAGES, resetImageIndexMap } from '../constants';
 import { Website, Industry, Page } from '../types';

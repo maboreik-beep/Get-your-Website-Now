@@ -9,7 +9,8 @@ const getAI = () => {
         if (!process.env.API_KEY) {
             // In a real app, you might want to handle this more gracefully,
             // but for this context, we assume the key is present.
-            throw new Error("API_KEY environment variable not set.");
+            console.error("API_KEY environment variable not set. Gemini API calls will fail.");
+            throw new Error("API_KEY environment variable not set. Please configure it to use AI features.");
         }
         ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     }
@@ -181,7 +182,7 @@ export const generateWebsiteWithAI = async (
     - Gallery: 3-4 diverse items with titles, categories, and images.
     - FAQ: 2-3 common questions and answers.
     - Blog: 3-4 posts with titles, excerpts, authors, dates, and images.
-    - Contact: Fictional but realistic address, email (use @goonline.cloud), phone, and formRecipientEmail (use @goonline.cloud).
+    - Contact: Fictional but realistic address, email, phone, and formRecipientEmail using the domain goonline.cloud. For example, email: info@goonline.cloud, formRecipientEmail: form@goonline.cloud.
     - Footer: Include social links for twitter, linkedin, facebook, and instagram. The footer text should be "© [Current Year] ${companyName[defaultLanguage]}. All Rights Reserved.".
 
     For all text fields, ensure the value is an object. The key '${defaultLanguage}' should contain the primary content. Additionally, for the internal API schema validation, include a key named '__default_lang_content' which also contains this primary content. E.g., "headline": { "__default_lang_content": "Welcome to our company", "${defaultLanguage}": "Welcome to our company" }.

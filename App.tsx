@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Website } from './types';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
@@ -19,7 +18,6 @@ export const WebsiteContext = React.createContext<{
   setActivePageId: React.Dispatch<React.SetStateAction<string | null>>;
   currentContentLanguage: string; // New: language for content preview/editing
   setCurrentContentLanguage: React.Dispatch<React.SetStateAction<string>>; // New: setter for content language
-  supportedLanguages: string[]; // Added: supported languages from the website object
 } | null>(null);
 
 type View = 'landing' | 'auth' | 'dashboard' | 'editor';
@@ -69,7 +67,7 @@ const AppContent: React.FC = () => {
         // If already in editor with an editingWebsite, stay there.
         // This handles cases where a logged-in user just created a site or opened an existing one.
         setCurrentContentLanguage(editingWebsite.defaultLanguage || 'en'); // Ensure content language is set
-      } else if (view !== 'dashboard' && view !== 'editor') { // Only set to dashboard if not already there or in editor
+      } else if (view !== 'dashboard') { // Only set to dashboard if not already there, avoiding unnecessary re-renders
         // Regular logged-in user, not editing anything, show them the dashboard
         setView('dashboard');
       }
@@ -159,8 +157,7 @@ const AppContent: React.FC = () => {
       activePageId,
       setActivePageId,
       currentContentLanguage,
-      setCurrentContentLanguage,
-      supportedLanguages: websiteForEditor.supportedLanguages || [],
+      setCurrentContentLanguage
     };
     return (
       <WebsiteContext.Provider value={contextValue}>
