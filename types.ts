@@ -268,4 +268,3 @@ export type Section =
   | BlogSection
   | ContactSection
   | FooterSection;
-    

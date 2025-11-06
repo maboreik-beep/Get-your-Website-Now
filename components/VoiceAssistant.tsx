@@ -186,7 +186,8 @@ const VoiceAssistant: React.FC = () => {
             nextStartTimeRef.current = 0;
 
             // Provide current website structure as system instruction context
-            const websiteContextInstruction = `You are a voice assistant helping a user build a website. Be friendly, concise, and helpful. The user's current website data is: ${JSON.stringify(context.website, null, 2)}. The current active page is '${context.website.pages.find(p => p.id === context.activePageId)?.name}'. Use this context to answer questions and fulfill edit requests using your tools.`;
+            // FIX: Access page name using currentContentLanguage or defaultLanguage
+            const websiteContextInstruction = `You are a voice assistant helping a user build a website. Be friendly, concise, and helpful. The user's current website data is: ${JSON.stringify(context.website, null, 2)}. The current active page is '${context.website.pages.find(p => p.id === context.activePageId)?.name[context.currentContentLanguage] || context.website.pages.find(p => p.id === context.activePageId)?.name[context.website.defaultLanguage]}'. Use this context to answer questions and fulfill edit requests using your tools.`;
             
             // FIX: sessionPromiseRef.current is already Promise<Session>, so direct assignment is correct.
             // The previous error was a misleading type inference issue.

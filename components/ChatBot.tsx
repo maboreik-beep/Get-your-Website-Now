@@ -128,7 +128,7 @@ const ChatBot: React.FC = () => {
 
     try {
       // Provide context of the current website structure
-      const contextPrompt = `CONTEXT: The user is currently editing a website. Here is the JSON structure of the current site: ${JSON.stringify(website, null, 2)}. The user's current page is '${website.pages.find(p => p.id === context.activePageId)?.name}'.
+      const contextPrompt = `CONTEXT: The user is currently editing a website. Here is the JSON structure of the current site: ${JSON.stringify(website, null, 2)}. The user's current page is '${website.pages.find(p => p.id === context.activePageId)?.name[context.currentContentLanguage] || website.pages.find(p => p.id === context.activePageId)?.name[website.defaultLanguage]}'.
       The user's request is: "${userMessage.text}"`;
       
       // FIX: Pass the contextPrompt directly as the message string in contents.
