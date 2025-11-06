@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../services/firebase';
 import { useAuth } from './auth/AuthProvider';
-import { Website, Page, Industry } from '../types';
-import { Logo, Icon, INDUSTRY_TEMPLATES, useLanguage, LANGUAGES } from '../constants'; // Import useLanguage
+import { Website, Page, Industry, HeroSection } from '../types'; // FIX: Import HeroSection
+import { Logo, Icon, INDUSTRY_TEMPLATES, useLanguage, LANGUAGES, resetImageIndexMap } from '../constants'; // Import useLanguage and resetImageIndexMap
 import { InitialSetupModal } from './InitialSetupModal';
 import { generateWebsiteWithAI } from '../services/geminiService';
 
@@ -44,6 +43,9 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ onEditWebsite }) => {
 
   const handleStart = async (options: { companyName: string; industry: Industry; theme: 'light' | 'dark'; method: 'template' | 'ai', brochureImage?: string, textPromptInput?: string, defaultLanguage: string }) => {
     const { companyName, industry, theme, method, brochureImage, textPromptInput, defaultLanguage } = options;
+
+    // Reset fixed image indices for a new website creation session
+    resetImageIndexMap();
 
     const createWebsiteObject = (
       name: string,
@@ -153,46 +155,49 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ onEditWebsite }) => {
             <h1 className="text-3xl md:text-4xl font-extrabold">{t('yourWebsites')}</h1>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-primary text-black font-bold py-2 px-5 rounded-lg shadow-md hover:bg-primary-dark transition-all transform hover:scale-105 flex items-center gap-2"
+              className="bg-primary text-black font-bold py-2 px-6 rounded-lg shadow-md hover:bg-primary-dark transition-all transform hover:scale-105 flex items-center gap-2"
             >
               <Icon name="Plus" className="w-5 h-5" /> {t('createNewWebsite')}
             </button>
           </div>
 
-          {websites.length === 0 ? (
-            <div className="text-center p-10 bg-dark-surface rounded-lg shadow-xl">
-              <p className="text-lg text-dark-text-secondary mb-4">{t('noWebsitesYet')}</p>
+          {websites.length === 0 && !isLoading && (
+            <div className="text-center p-12 bg-dark-surface rounded-lg">
+              <h2 className="text-xl font-semibold mb-4">{t('noWebsitesYet')}</h2>
               <p className="text-dark-text-secondary">{t('clickButtonCreateFirst')}</p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {websites.map((website) => (
-                <div key={website.id} className="bg-dark-surface rounded-lg shadow-xl overflow-hidden group hover:shadow-primary/30 transition-shadow duration-300">
-                  <div className="p-6">
-                    <h2 className="text-xl font-bold text-white">
-                      {website.name[website.defaultLanguage]}
-                    </h2>
-                    <p className="text-dark-text-secondary text-sm">
-                      {website.industry} &bull; {website.theme} theme
-                    </p>
-                    {/* Placeholder for a website thumbnail or preview */}
-                    <div className="w-full h-32 bg-dark-bg rounded-md mt-4 flex items-center justify-center text-dark-text-secondary text-sm">
-                        Website Preview Here
-                    </div>
+          )}
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {websites.map(website => (
+              <div key={website.id} className="bg-dark-surface rounded-lg shadow-xl overflow-hidden group">
+                <div className="relative h-48 bg-gray-700 flex items-center justify-center text-gray-400 overflow-hidden">
+                  {/* Display a placeholder or a preview of the website (e.g., first section image) */}
+                  {website.pages[0]?.sections[0]?.type === 'Hero' && (
+                    <img
+                      src={(website.pages[0].sections[0] as HeroSection).backgroundImage || 'https://via.placeholder.com/600x400?text=Website+Preview'}
+                      alt={`${website.name[currentUILanguage] || website.name[website.defaultLanguage]} preview`}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => onEditWebsite(website)}
-                      className="mt-6 w-full bg-primary text-black font-bold py-2 px-4 rounded-md hover:bg-primary-dark transition-all transform hover:scale-105"
+                      className="bg-primary text-black font-bold py-2 px-6 rounded-lg hover:bg-primary-dark transition-all transform hover:scale-110"
                     >
                       {t('editSite')}
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="p-4">
+                  <h3 className="text-xl font-bold mb-1">{website.name[currentUILanguage] || website.name[website.defaultLanguage]}</h3>
+                  <p className="text-sm text-dark-text-secondary">{website.industry}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </main>
       </div>
-
       {showCreateModal && (
         <InitialSetupModal
           onClose={() => setShowCreateModal(false)}

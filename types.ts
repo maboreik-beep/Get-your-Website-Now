@@ -122,6 +122,7 @@ export interface BlogItem {
 // Section Types
 export interface BaseSection { // Export BaseSection
   id: string;
+  type: Section['type']; // FIX: Added 'type' property to BaseSection to resolve type errors
   enabled: boolean;
   theme?: 'light' | 'dark'; // Added theme for section-specific styling
 }

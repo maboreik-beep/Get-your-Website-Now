@@ -101,7 +101,7 @@ const ChatBot: React.FC = () => {
       
       // Send tool responses back to the model
       // FIX: Pass toolResponses directly as the message, as it's an array of Part objects.
-      const response: GenerateContentResponse = await chatRef.current.sendMessage({ message: toolResponses });
+      const response: GenerateContentResponse = await chatRef.current.sendMessage({ contents: [{ toolResponses }] });
 
       // The model's response to the tool execution could be another function call or a text message.
       // FIX: Access functionCalls directly from the response object as per guidelines
@@ -131,8 +131,8 @@ const ChatBot: React.FC = () => {
       const contextPrompt = `CONTEXT: The user is currently editing a website. Here is the JSON structure of the current site: ${JSON.stringify(website, null, 2)}. The user's current page is '${website.pages.find(p => p.id === context.activePageId)?.name}'.
       The user's request is: "${userMessage.text}"`;
       
-      // FIX: Pass the contextPrompt directly as the message string.
-      const response: GenerateContentResponse = await chatRef.current.sendMessage({ message: contextPrompt });
+      // FIX: Pass the contextPrompt directly as the message string in contents.
+      const response: GenerateContentResponse = await chatRef.current.sendMessage({ contents: [{ text: contextPrompt }] });
       
       // FIX: Access functionCalls directly from the response object as per guidelines
       if (response.functionCalls && response.functionCalls.length > 0) {

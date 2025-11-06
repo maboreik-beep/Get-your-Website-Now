@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Industry } from '../types';
-import { Icon, INDUSTRIES, useLanguage, LANGUAGES } from '../constants'; // Import useLanguage and LANGUAGES
+import { Icon, INDUSTRIES, useLanguage, LANGUAGES, resetImageIndexMap } from '../constants'; // Import useLanguage, LANGUAGES, and resetImageIndexMap
 
 interface InitialSetupModalProps {
   onStart: (options: {
@@ -46,6 +46,9 @@ export const InitialSetupModal: React.FC<InitialSetupModalProps> = ({ onStart, o
       return;
     }
     
+    // Reset fixed image indices before starting a new build process
+    resetImageIndexMap();
+
     setLoadingText(
       method === 'ai' 
         ? (brochureImage ? t('generatingFromBrochure') : (textPromptInput ? t('generatingFromDescription') : t('generatingWithAI')))

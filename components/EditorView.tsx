@@ -6,7 +6,7 @@ import WebsiteComponent from './WebsiteComponent';
 import { useAuth } from './auth/AuthProvider';
 import SectionFormRenderer from './SectionFormRenderer';
 import ChatBot from './ChatBot';
-import VoiceAssistant from './VoiceAssistant';
+import VoiceAssistant from './VoiceAssistant'; // FIX: Changed to default import
 import { extractTranslatableContent, translateContentWithAI, applyTranslatedContent } from '../services/geminiService';
 import { createDefaultSection } from '../constants'; // Import the updated helper
 

@@ -295,30 +295,64 @@ const VoiceAssistant: React.FC = () => {
             className={`fixed bottom-20 right-24 md:bottom-5 md:right-24 bg-dark-surface border-2 ${isActive ? 'border-red-500' : 'border-primary'} text-white rounded-full p-4 shadow-lg hover:scale-110 transition z-40`}
             aria-label={isActive ? 'Stop voice assistant' : 'Start voice assistant'}
         >
-            <Icon name={isActive ? 'MicOff' : 'Mic'} className={`w-8 h-8 ${isActive ? 'text-red-500' : 'text-primary'}`} />
+            <Icon name={isActive ? 'MicOff' : 'Mic'} className="w-8 h-8" />
         </button>
+
         {isActive && (
-            <div className="fixed bottom-20 right-5 w-80 h-auto max-h-96 bg-dark-surface rounded-lg shadow-2xl flex flex-col z-50 md:bottom-24 md:right-5 animate-fade-in-up">
+            <div className="fixed bottom-20 right-24 w-80 h-96 bg-dark-surface rounded-lg shadow-2xl flex flex-col z-50 md:bottom-5 md:right-24 animate-fade-in-up">
                 <header className="bg-dark-border p-3 flex justify-between items-center rounded-t-lg">
                     <h3 className="text-white font-bold">Voice Assistant</h3>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-dark-text-secondary capitalize">{status}</span>
-                        <div className={`w-3 h-3 rounded-full ${status === 'listening' ? 'bg-green-500 animate-pulse' : status === 'speaking' ? 'bg-blue-500 animate-pulse' : 'bg-gray-500'}`}></div>
-                    </div>
+                    <button onClick={stopConversation} className="text-dark-text-secondary hover:text-white" aria-label="Close voice assistant">
+                        <Icon name="Close" />
+                    </button>
                 </header>
-                <div className="flex-1 p-3 overflow-y-auto text-white text-sm">
-                   {transcriptions.map((t, i) => (
-                       <div key={i}>
-                           <p><strong className="text-primary">You:</strong> {t.user}</p>
-                           <p className="mt-1 mb-3"><strong className="text-blue-400">AI:</strong> {t.model}</p>
-                       </div>
-                   ))}
-                   { (currentTranscription.user || currentTranscription.model) && (
-                       <div>
-                           <p className="text-gray-400"><strong className="text-primary">You:</strong> {currentTranscription.user}</p>
-                           <p className="text-gray-400 mt-1 mb-3"><strong className="text-blue-400">AI:</strong> {currentTranscription.model}</p>
-                       </div>
-                   )}
+                <div className="flex-1 p-3 overflow-y-auto">
+                    {transcriptions.map((t, index) => (
+                        <React.Fragment key={index}>
+                            {t.user && (
+                                <div className="flex mb-2 justify-end">
+                                    <div className="rounded-lg px-3 py-2 max-w-[80%] bg-primary text-black">
+                                        <p className="text-sm">You: {t.user}</p>
+                                    </div>
+                                </div>
+                            )}
+                            {t.model && (
+                                <div className="flex mb-2 justify-start">
+                                    <div className="rounded-lg px-3 py-2 max-w-[80%] bg-dark-border text-white">
+                                        <p className="text-sm">AI: {t.model}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </React.Fragment>
+                    ))}
+                    {currentTranscription.user && (
+                        <div className="flex mb-2 justify-end">
+                            <div className="rounded-lg px-3 py-2 max-w-[80%] bg-primary text-black">
+                                <p className="text-sm">You: {currentTranscription.user}</p>
+                            </div>
+                        </div>
+                    )}
+                    {currentTranscription.model && (
+                        <div className="flex mb-2 justify-start">
+                            <div className="rounded-lg px-3 py-2 max-w-[80%] bg-dark-border text-white">
+                                <p className="text-sm">AI: {currentTranscription.model}</p>
+                            </div>
+                        </div>
+                    )}
+                    {status === 'connecting' && (
+                        <div className="flex justify-start mb-2">
+                            <div className="rounded-lg px-3 py-2 bg-dark-border text-white">
+                                <div className="flex items-center space-x-1">
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-75"></span>
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></span>
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div className="p-3 border-t border-dark-border text-center text-sm text-dark-text-secondary">
+                    Status: {status}
                 </div>
             </div>
         )}

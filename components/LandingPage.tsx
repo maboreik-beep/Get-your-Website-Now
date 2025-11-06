@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Logo, INDUSTRY_TEMPLATES, useLanguage, LANGUAGES } from '../constants';
+import { Logo, INDUSTRY_TEMPLATES, useLanguage, LANGUAGES, resetImageIndexMap } from '../constants';
 import { Website, Industry, Page } from '../types';
 import { InitialSetupModal } from './InitialSetupModal';
 import { generateWebsiteWithAI } from '../services/geminiService';
@@ -18,6 +18,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onGoToMyWebs
 
   const handleStart = async (options: { companyName: string; industry: Industry; theme: 'light' | 'dark'; method: 'template' | 'ai', brochureImage?: string, textPromptInput?: string, defaultLanguage: string }) => {
       const { companyName, industry, theme, method, brochureImage, textPromptInput, defaultLanguage } = options;
+
+      // Reset fixed image indices for a new website creation session
+      resetImageIndexMap();
 
       const createWebsiteObject = (
         name: string,
@@ -87,7 +90,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onGoToMyWebs
       <div className="min-h-screen bg-dark-bg text-white flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-dark-bg via-dark-surface to-dark-bg z-0"></div>
         <header className="absolute top-0 left-0 p-6 md:p-8 z-10 flex justify-between w-full">
-          <Logo className="h-16 w-auto" /> {/* Adjusted logo size */}
+          <Logo className="h-20 w-auto" /> {/* Adjusted logo size for prominence */}
           <div className="flex items-center gap-4">
             <select
               value={currentUILanguage}

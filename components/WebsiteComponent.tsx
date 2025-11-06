@@ -672,51 +672,54 @@ const WebsiteComponent: React.FC<WebsiteComponentProps> = ({ website, activePage
         return <div className="text-center text-dark-text-secondary p-8">No website or page data available.</div>;
     }
 
-    const { themeColor, theme: websiteTheme, defaultLanguage, contentTranslations } = website;
-    const { currentContentLanguage } = useContext(WebsiteContext)!;
+    const { themeColor, theme: websiteTheme, defaultLanguage } = website;
+    // FIX: Destructure currentContentLanguage from WebsiteContext using optional chaining.
+    const { currentContentLanguage } = useContext(WebsiteContext) || { currentContentLanguage: website.defaultLanguage };
 
 
     const renderSection = (section: Section, sectionIndex: number) => {
         if (!section.enabled) return null;
 
-        // FIX: Explicitly cast section to BaseSection to resolve 'never' type inference issue for common properties.
-        const pathPrefix = `pages.${activePage.id}.sections.${(section as BaseSection).id}`; // Unique path for content extraction/translation
+        // FIX: Explicitly assert section as BaseSection to reinforce type inference for id and type,
+        // even though it should be implicitly handled by the Section union definition.
+        const baseSection: BaseSection = section; // Ensure section is treated as BaseSection for common properties
+        const pathPrefix = `pages.${activePage.id}.sections.${baseSection.id}`; // Use baseSection.id
 
-        switch (section.type) {
+        switch (baseSection.type) { // Use baseSection.type
             case 'Hero':
-                return <HeroSectionComponent key={section.id} section={section} themeColor={themeColor} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <HeroSectionComponent key={baseSection.id} section={section as HeroSection} themeColor={themeColor} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'About':
-                return <AboutSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <AboutSectionComponent key={baseSection.id} section={section as AboutSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Story':
-                return <StorySectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <StorySectionComponent key={baseSection.id} section={section as StorySection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Services':
-                return <ServicesSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <ServicesSectionComponent key={baseSection.id} section={section as ServicesSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Products':
-                return <ProductsSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <ProductsSectionComponent key={baseSection.id} section={section as ProductsSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Features':
-                return <FeaturesSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <FeaturesSectionComponent key={baseSection.id} section={section as FeaturesSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Pricing':
-                return <PricingSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <PricingSectionComponent key={baseSection.id} section={section as PricingSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Clients':
-                return <ClientsSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <ClientsSectionComponent key={baseSection.id} section={section as ClientsSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Team':
-                return <TeamSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <TeamSectionComponent key={baseSection.id} section={section as TeamSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Gallery':
-                return <GallerySectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <GallerySectionComponent key={baseSection.id} section={section as GallerySection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Testimonials':
-                return <TestimonialsSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <TestimonialsSectionComponent key={baseSection.id} section={section as TestimonialsSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'FAQ':
-                return <FAQSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <FAQSectionComponent key={baseSection.id} section={section as FAQSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'CTA':
-                return <CTASectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <CTASectionComponent key={baseSection.id} section={section as CTASection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Blog':
-                return <BlogSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <BlogSectionComponent key={baseSection.id} section={section as BlogSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Contact':
-                return <ContactSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <ContactSectionComponent key={baseSection.id} section={section as ContactSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             case 'Footer':
-                return <FooterSectionComponent key={section.id} section={section} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
+                return <FooterSectionComponent key={baseSection.id} section={section as FooterSection} themeColor={themeColor} websiteTheme={websiteTheme} website={website} currentContentLanguage={currentContentLanguage} path={pathPrefix} />;
             default:
-                return <div key={section.id} className="text-center text-red-500 p-8">Unknown section type: {section.type}</div>;
+                return <div key={baseSection.id} className="text-center text-red-500 p-8">Unknown section type: {baseSection.type}</div>;
         }
     };
 

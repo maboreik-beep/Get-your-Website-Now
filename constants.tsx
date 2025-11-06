@@ -5,6 +5,8 @@ import {
   CTASection, TeamSection, StorySection, ContactSection, ProductsSection, FeaturesSection, PricingSection, ClientsSection, GallerySection, FAQSection, BlogSection,
   TeamMember, TestimonialItem, ServiceItem, TimelineItem, ProductItem, FeatureItem, PriceItem, ClientItem, GalleryItem, FAQItem, BlogItem
 } from './types';
+import { FIXED_IMAGES, getRandomFixedImage, resetImageIndexMap } from './imageTemplates';
+
 
 // Helper to generate unique IDs
 export const generateId = (prefix: string = 'id'): string => `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
@@ -28,7 +30,7 @@ export const THEME_COLORS = [
 ];
 
 // Updated logo Base64 for better visibility on dark backgrounds (white with green play button)
-export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiBmb3JtPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1pbHk9IkludGVyIiBmb250LXdlaWdoPSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+R088L3RleHQ+CiAgPHRleHQgeD0iNzAiIHk9IjMyIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+T05MSU5FPC90ZXh0PgogIDxwYXRoIGQ9Ik0xNDcuMzQ5IDMxLjYzMzFMMTY2Ljg2NCAyNS41NzE0QzE3MC4zNTYgMjQuMzY3MiAxNzIuNTg2IDI4LjA5NzEgMTcwLjUxMiAzMS4zMDkxTDE2Ny4wNzcgMzYuNDExTDE3MC41MzYgNDEuNTI0NUS,MTcwLjUzNiA0MS41MjQ1QzE3Mi41OTMgNDQuNzQ1IDE3MC4zNTcgNDguNDg1OCAxNjYuODcwIDQ3LjI3MjZMMTQ3LjM1NSA0MS4yNjYyTDE0Ny4zNDkgMzEuNjMzMVYzMS42MzMxWiIgZmlsbD0iI0EzRTYzNSIvPgogIDx0ZXh0IHg9IjMyIiB5PSI0NCIgZm9udC1mYW1pbHk9IkludGVyIiBmb250LXdlaWdodD0iNDAwIiBmaWxsPSIjRkZGRkZGIiBmb250LXNpemU9IjhweCI+d3d3Lmdvb25saW5lLmNsb3VkPC90ZXh0Pgo8L3N2Zz4`;
+export const GOONLINE_LOGO_BASE64 = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMjU2IDY0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDx0ZXh0IHg9IjAiIHk9IjIwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMTBweCI+Tk9XPC90ZXh0PgogIDx0ZXh0IHg9IjMyIiB5PSIzMiIgZm9udC1mYW1seT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+R088L3RleHQ+CiAgPHRleHQgeD0iNzAiIHk9IjMyIiBmb250LWZhbWlyeT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iMjRweCI+T05MSU5FPC90ZXh0PgogIDxwYXRoIGQ9Ik0xNDcuMzQ5IDMxLjYzMzFMMTY2Ljg2NCAyNS41NzE0QzE3MC4zNTYgMjQuMzY3MiAxNzIuNTg2IDI4LjA5NzEgMTcwLjUxMiAzMS4zMDkxTDE2Ny4wNzcgMzYuNDExTDE3MC41MzYgNDEuNTI0NUS,11NS4xOSA0NC43NDUgMTcwLjM1NyA0OC40ODU4IDE2Ni44NzAgNDcuMjcyNkwxNDcuMzU1IDQxLjI2NjJMMTQ3LjM0OSAzMS42MzMxWiAiIGZpbGw9IiNFNjM1Ii8+CiAgPHRleHQgeD0iMzIiIHk9IjQ0IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI0MDAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtc2l6ZT0iOHB4Ij53d3cuZ29ubGluZS5jbG91ZDwvdGV4dD4KPC9zdmc+`;
 
 export const Logo: React.FC<{ className?: string }> = ({ className }) => (
     <img src={GOONLINE_LOGO_BASE64} alt="Go Online Logo" className={className} />
@@ -70,7 +72,7 @@ export const ICONS = {
   Twitter: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.254 5.309c-.779.345-1.635.578-2.529.682.898-.539 1.59-1.396 1.916-2.414-.843.5-1.782.866-2.774 1.063C18.17 4.12 16.94 3.5 15.612 3.5c-2.413 0-4.373 1.954-4.373 4.373 0 .343.039.677.113.992-3.638-.182-6.864-1.928-9.023-4.577-.376.64-.593 1.387-.593 2.185 0 1.517.771 2.858 1.942 3.646-.718-.022-1.393-.22-1.983-.548v.056c0 2.103 1.498 3.856 3.483 4.256-.363.099-.744.151-1.137.151-.278 0-.547-.026-.81-.077.553 1.724 2.152 2.977 4.04 3.011-1.488 1.164-3.355 1.859-5.397 1.859-.352 0-.699-.021-1.04-.061 1.922 1.233 4.195 1.954 6.643 1.954 8.274 0 12.802-6.85 12.802-12.802 0-.195-.004-.39-.013-.584.881-.632 1.64-1.42 2.246-2.327z"/></svg>,
   Linkedin: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.23 0H1.77C.792 0 0 .774 0 1.734v20.532c0 .96.792 1.734 1.77 1.734h20.46c.978 0 1.77-.774 1.77-1.734V1.734c0-.96-.792-1.734-1.77-1.734zM7.3 20.25H3.6V8.25h3.7v12zm-1.85-13.6c-1.2 0-2.18-.95-2.18-2.12C3.27 3.38 4.25 2.43 5.45 2.43c1.2 0 2.18.95 2.18 2.12 0 1.17-.98 2.1-2.18 2.1zM20.48 20.25h-3.7V14.5c0-1.3-.02-2.96-1.8-2.96-1.82 0-2.1 1.4-2.1 2.86v5.85h-3.7V8.25h3.55v1.65h.05c.49-.9 1.68-1.85 3.45-1.85 3.69 0 4.37 2.43 4.37 5.58v6.62h.01z"/></svg>,
   Facebook: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.35C0 23.407.593 24 1.325 24h11.334V14.61H9.68V11.026h2.979V8.402c0-2.966 1.812-4.582 4.455-4.582 1.309 0 2.436.097 2.768.14V7.47h-1.834c-1.448 0-1.733.688-1.733 1.702v2.106h3.873l-.61 3.584h-3.263V24h6.046c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>,
-  Instagram: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.071 1.17.055 1.805.249 2.227.424.607.246 1.058.799 1.258 1.41.173.47.319.864.424 2.227.059 1.266.071 1.646.071 4.85s-.012 3.584-.071 4.85c-.055 1.17-.249 1.805-.424 2.227-.246.607-.799 1.058-1.41 1.258-.173.47-.319.864-.424 2.227-.059 1.266-.071 1.646-.071 4.85s.012 3.584.071 4.85c.055 1.17.249 1.805.424 2.227.246.607.799 1.058 1.41-1.258.47-.173.864.319 2.227-.424 1.266-.059 1.646-.071 4.85-.071zm0-2.163c-3.265 0-3.693.013-4.994.072-1.262.059-2.105.275-2.825.556-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s.013 3.693.072 4.994c.059 1.262.275 2.105.556 2.825 0 0 .978.465 2.158 1.444 2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994c-.059 1.262-.275 2.105-.556 2.825-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994zM12 6.865c-2.831 0-5.135 2.304-5.135 5.135s2.304 5.135 5.135 5.135 5.135-2.304 5.135-5.135-2.304-5.135-5.135-5.135zm0 8.571c-1.996 0-3.436-1.44-3.436-3.436s1.44-3.436 3.436-3.436 3.436 1.44 3.436 3.436-1.44 3.436-3.436 3.436zm6.807-9.646c0-.85-.688-1.538-1.538-1.538-.849 0-1.538.688-1.538 1.538 0 .849.688 1.538 1.538 1.538.85 0 1.538-.688 1.538-1.538z"/></svg>,
+  Instagram: (p: any) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.071 1.17.055 1.805.249 2.227.424.607.246 1.058.799 1.258 1.41.173.47.319.864.424 2.227.059 1.266.071 1.646.071 4.85s-.012 3.584-.071 4.85c-.055 1.17-.249 1.805-.424 2.227-.246.607-.799 1.058-1.41 1.258-.173.47-.319.864-.424 2.227-.059 1.266-.071 1.646-.071 4.85s.012 3.584.071 4.85c.055 1.17.249 1.805.424 2.227.246.607.799 1.058 1.41-1.258.47-.173.864.319 2.227-.424 1.266-.059 1.646-.071 4.85-.071zm0-2.163c-3.265 0-3.693.013-4.994.072-1.262.059-2.105.275-2.825.556-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s.013 3.693.072 4.994c.059 1.262.275 2.105.556 2.825 0 0 .978.465 2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994c-.059 1.262-.275 2.105-.556 2.825-1.18.465-2.158 1.444-2.623 2.623-.28.72-.497 1.563-.556 2.825-.059 1.3-.072 1.729-.072 4.994s-.013 3.693-.072 4.994zM12 6.865c-2.831 0-5.135 2.304-5.135 5.135s2.304 5.135 5.135 5.135 5.135-2.304 5.135-5.135-2.304-5.135-5.135-5.135zm0 8.571c-1.996 0-3.436-1.44-3.436-3.436s1.44-3.436 3.436-3.436 3.436 1.44 3.436 3.436-1.44 3.436-3.436 3.436zm6.807-9.646c0-.85-.688-1.538-1.538-1.538-.849 0-1.538.688-1.538 1.538 0 .849.688 1.538 1.538 1.538.85 0 1.538-.688 1.538-1.538z"/></svg>,
 };
 
 // Generic Icon Component
@@ -252,7 +254,7 @@ const UI_TRANSLATIONS: { [langCode: string]: UITranslations } = {
     'provideDetails': 'قدّم بعض التفاصيل الأساسية للبدء.',
     'companyName': 'اسم شركتك',
     'selectIndustry': 'اختر مجال العمل...',
-    'describeWebsiteAI': 'صف موقعك (لتوليد الذكاء الاصطناعي)',
+    'describeWebsiteAI': 'صف موقعك (لتوليد الذكاء الاص4ناعي)',
     'aiPromptPlaceholder': 'مثال: "مدونة تقنية حديثة عن الذكاء الاصطناعي بتصميم داكن وبسيط" أو "موقع مطعم حيوي يركز على المأكولات الإيطالية مع نظام حجز عبر الإنترنت"',
     'uploadBrochureOptional': 'أو حمّل كتيبًا (اختياري، لتوليد الذكاء الاصطناعي)',
     'uploadFile': 'تحميل ملف',
@@ -445,6 +447,8 @@ export const useLanguage = () => {
   return context;
 };
 
+// Re-export resetImageIndexMap for direct use in other components
+export { resetImageIndexMap } from './imageTemplates';
 
 // --- Section Helper Functions ---
 const createHeroSection = (companyName: Record<string, string>, theme: 'light' | 'dark', index: number = 0, layout: HeroSection['layout'] = 'left-aligned', defaultLang: string): HeroSection => ({
@@ -455,7 +459,7 @@ const createHeroSection = (companyName: Record<string, string>, theme: 'light' |
   subheadline: { [defaultLang]: `We bring your visions to life with cutting-edge solutions and unparalleled creativity. Discover what makes us different.` },
   ctaText: { [defaultLang]: 'Explore Services' },
   ctaText2: { [defaultLang]: 'Contact Us' },
-  backgroundImage: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-hero-${index}/1920/1080`,
+  backgroundImage: getRandomFixedImage('hero-background'), // Using fixed image
   layout,
   theme: 'dark', // Hero sections often look best dark for impact
 });
@@ -466,7 +470,7 @@ const createAboutSection = (companyName: Record<string, string>, industry: Indus
   enabled: true,
   title: { [defaultLang]: `About ${companyName[defaultLang]}` },
   text: { [defaultLang]: `With years of experience in the ${industry} sector, ${companyName[defaultLang]} is dedicated to providing exceptional solutions. Our mission is to empower businesses and individuals alike through innovation, quality, and a commitment to excellence. We believe in building lasting relationships with our clients, understanding their unique needs, and delivering results that exceed expectations.` },
-  image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-about-${index}/600/400`,
+  image: getRandomFixedImage('about-image'), // Using fixed image
   layout,
   theme,
 });
@@ -507,9 +511,9 @@ const createProductsSection = (companyName: Record<string, string>, theme: 'ligh
     enabled: true,
     title: { [defaultLang]: `Our Latest Products` },
     items: [
-        { id: generateId('pi'), name: { [defaultLang]: 'Product Alpha' }, description: { [defaultLang]: 'Innovative solution for modern needs.' }, price: '$29.99', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-prod-alpha/400/300` },
-        { id: generateId('pi'), name: { [defaultLang]: 'Product Beta' }, description: { [defaultLang]: 'Next-gen tool for efficiency.' }, price: '$49.00', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-prod-beta/400/300` },
-        { id: generateId('pi'), name: { [defaultLang]: 'Product Gamma' }, description: { [defaultLang]: 'Essential for every professional.' }, price: '$19.50', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-prod-gamma/400/300` },
+        { id: generateId('pi'), name: { [defaultLang]: 'Product Alpha' }, description: { [defaultLang]: 'Innovative solution for modern needs.' }, price: '$29.99', image: getRandomFixedImage('product-image') }, // Using fixed image
+        { id: generateId('pi'), name: { [defaultLang]: 'Product Beta' }, description: { [defaultLang]: 'Next-gen tool for efficiency.' }, price: '$49.00', image: getRandomFixedImage('product-image') }, // Using fixed image
+        { id: generateId('pi'), name: { [defaultLang]: 'Product Gamma' }, description: { [defaultLang]: 'Essential for every professional.' }, price: '$19.50', image: getRandomFixedImage('product-image') }, // Using fixed image
     ],
     theme,
 });
@@ -522,9 +526,9 @@ const createFeaturesSection = (companyName: Record<string, string>, theme: 'ligh
     // ensuring it's treated as Record<string, string> where expected.
     title: { [defaultLang]: `Why Choose ${companyName[defaultLang]}?` } as Record<string, string>,
     items: [
-        { id: generateId('fi-1'), name: { [defaultLang]: 'Unmatched Quality' }, description: { [defaultLang]: 'We are committed to delivering products and services of the highest standard.' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-feature-1/600/400` },
-        { id: generateId('fi-2'), name: { [defaultLang]: 'Customer-Centric Approach' }, description: { [defaultLang]: 'Your satisfaction is our priority. We listen, adapt, and deliver.' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-feature-2/600/400` },
-        { id: generateId('fi-3'), name: { [defaultLang]: 'Innovative Solutions' }, description: { [defaultLang]: 'Leveraging the latest technology to provide cutting-edge results.' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-feature-3/600/400` },
+        { id: generateId('fi-1'), name: { [defaultLang]: 'Unmatched Quality' }, description: { [defaultLang]: 'We are committed to delivering products and services of the highest standard.' }, image: getRandomFixedImage('feature-image') }, // Using fixed image
+        { id: generateId('fi-2'), name: { [defaultLang]: 'Customer-Centric Approach' }, description: { [defaultLang]: 'Your satisfaction is our priority. We listen, adapt, and deliver.' }, image: getRandomFixedImage('feature-image') }, // Using fixed image
+        { id: generateId('fi-3'), name: { [defaultLang]: 'Innovative Solutions' }, description: { [defaultLang]: 'Leveraging the latest technology to provide cutting-edge results.' }, image: getRandomFixedImage('feature-image') }, // Using fixed image
     ],
     layout,
     theme,
@@ -549,10 +553,10 @@ const createClientsSection = (companyName: Record<string, string>, theme: 'light
     enabled: true,
     title: { [defaultLang]: 'Trusted by Industry Leaders' },
     items: [
-        { id: generateId('cl1'), name: { [defaultLang]: 'Client A' }, logo: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-client-a/200/100` },
-        { id: generateId('cl2'), name: { [defaultLang]: 'Client B' }, logo: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-client-b/200/100` },
-        { id: generateId('cl3'), name: { [defaultLang]: 'Client C' }, logo: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-client-c/200/100` },
-        { id: generateId('cl4'), name: { [defaultLang]: 'Client D' }, logo: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-client-d/200/100` },
+        { id: generateId('cl1'), name: { [defaultLang]: 'Client A' }, logo: getRandomFixedImage('client-logo') }, // Using fixed image
+        { id: generateId('cl2'), name: { [defaultLang]: 'Client B' }, logo: getRandomFixedImage('client-logo') }, // Using fixed image
+        { id: generateId('cl3'), name: { [defaultLang]: 'Client C' }, logo: getRandomFixedImage('client-logo') }, // Using fixed image
+        { id: generateId('cl4'), name: { [defaultLang]: 'Client D' }, logo: getRandomFixedImage('client-logo') }, // Using fixed image
     ],
     theme: 'light', // Forcing 'light' theme for the Clients section for better logo visibility.
 });
@@ -563,10 +567,10 @@ const createTeamSection = (companyName: Record<string, string>, theme: 'light' |
     enabled: true,
     title: { [defaultLang]: `Meet the Team Behind ${companyName[defaultLang]}` },
     members: [
-        { id: generateId('tm1'), name: { [defaultLang]: 'John Doe' }, title: { [defaultLang]: 'CEO & Founder' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-team-john/400/400`, social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } },
-        { id: generateId('tm2'), name: { [defaultLang]: 'Jane Smith' }, title: { [defaultLang]: 'Lead Designer' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-team-jane/400/400`, social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } },
-        { id: generateId('tm3'), name: { [defaultLang]: 'Peter Jones' }, title: { [defaultLang]: 'Head of Development' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-team-peter/400/400`, social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } },
-        { id: generateId('tm4'), name: { [defaultLang]: 'Sarah Brown' }, title: { [defaultLang]: 'Marketing Director' }, image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-team-sarah/400/400`, social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } },
+        { id: generateId('tm1'), name: { [defaultLang]: 'John Doe' }, title: { [defaultLang]: 'CEO & Founder' }, image: getRandomFixedImage('team-member-avatar'), social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } }, // Using fixed image
+        { id: generateId('tm2'), name: { [defaultLang]: 'Jane Smith' }, title: { [defaultLang]: 'Lead Designer' }, image: getRandomFixedImage('team-member-avatar'), social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } }, // Using fixed image
+        { id: generateId('tm3'), name: { [defaultLang]: 'Peter Jones' }, title: { [defaultLang]: 'Head of Development' }, image: getRandomFixedImage('team-member-avatar'), social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } }, // Using fixed image
+        { id: generateId('tm4'), name: { [defaultLang]: 'Sarah Brown' }, title: { [defaultLang]: 'Marketing Director' }, image: getRandomFixedImage('team-member-avatar'), social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } }, // Using fixed image
     ],
     layout,
     theme,
@@ -578,10 +582,10 @@ const createGallerySection = (companyName: Record<string, string>, theme: 'light
     enabled: true,
     title: { [defaultLang]: 'Our Portfolio' },
     items: [
-        { id: generateId('gi1'), image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-gallery-1/500/500`, title: { [defaultLang]: 'Project Alpha' }, category: { [defaultLang]: 'Design' } },
-        { id: generateId('gi2'), image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-gallery-2/500/500`, title: { [defaultLang]: 'Creative Solution' }, category: { [defaultLang]: 'Marketing' } },
-        { id: generateId('gi3'), image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-gallery-3/500/500`, title: { [defaultLang]: 'Web Development' }, category: { [defaultLang]: 'Development' } },
-        { id: generateId('gi4'), image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-gallery-4/500/500`, title: { [defaultLang]: 'Brand Identity' }, category: { [defaultLang]: 'Design' } },
+        { id: generateId('gi1'), image: getRandomFixedImage('gallery-item'), title: { [defaultLang]: 'Project Alpha' }, category: { [defaultLang]: 'Design' } }, // Using fixed image
+        { id: generateId('gi2'), image: getRandomFixedImage('gallery-item'), title: { [defaultLang]: 'Creative Solution' }, category: { [defaultLang]: 'Marketing' } }, // Using fixed image
+        { id: generateId('gi3'), image: getRandomFixedImage('gallery-item'), title: { [defaultLang]: 'Web Development' }, category: { [defaultLang]: 'Development' } }, // Using fixed image
+        { id: generateId('gi4'), image: getRandomFixedImage('gallery-item'), title: { [defaultLang]: 'Brand Identity' }, category: { [defaultLang]: 'Design' } }, // Using fixed image
     ],
     layout,
     theme,
@@ -593,9 +597,9 @@ const createTestimonialsSection = (companyName: Record<string, string>, theme: '
     enabled: true,
     title: { [defaultLang]: 'What Our Clients Say' },
     items: [
-        { id: generateId('ti1'), text: { [defaultLang]: 'Outstanding service and incredible results. Our business has seen significant growth thanks to their expertise.' }, author: { [defaultLang]: 'Alice Johnson' }, role: { [defaultLang]: 'CEO, Tech Innovations' }, avatar: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-avatar-alice/100/100` },
-        { id: generateId('ti2'), text: { [defaultLang]: 'A truly collaborative partner. They understood our vision perfectly and delivered beyond expectations.' }, author: { [defaultLang]: 'Bob Williams' }, role: { [defaultLang]: 'Marketing Lead, Global Corp' }, avatar: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-avatar-bob/100/100` },
-        { id: generateId('ti3'), text: { [defaultLang]: 'Professional, responsive, and always ready to help. Highly recommend their services!' }, author: { [defaultLang]: 'Carol Davis' }, role: { [defaultLang]: 'Founder, Creative Solutions' }, avatar: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-avatar-carol/100/100` },
+        { id: generateId('ti1'), text: { [defaultLang]: 'Outstanding service and incredible results. Our business has seen significant growth thanks to their expertise.' }, author: { [defaultLang]: 'Alice Johnson' }, role: { [defaultLang]: 'CEO, Tech Innovations' }, avatar: getRandomFixedImage('testimonial-avatar') }, // Using fixed image
+        { id: generateId('ti2'), text: { [defaultLang]: 'A truly collaborative partner. They understood our vision perfectly and delivered beyond expectations.' }, author: { [defaultLang]: 'Bob Williams' }, role: { [defaultLang]: 'Marketing Lead, Global Corp' }, avatar: getRandomFixedImage('testimonial-avatar') }, // Using fixed image
+        { id: generateId('ti3'), text: { [defaultLang]: 'Professional, responsive, and always ready to help. Highly recommend their services!' }, author: { [defaultLang]: 'Carol Davis' }, role: { [defaultLang]: 'Founder, Creative Solutions' }, avatar: getRandomFixedImage('testimonial-avatar') }, // Using fixed image
     ],
     layout,
     theme,
@@ -622,7 +626,7 @@ const createCTASection = (companyName: Record<string, string>, theme: 'light' | 
     text: { [defaultLang]: `Join thousands of satisfied customers who have built stunning websites with ${companyName[defaultLang]}.` },
     ctaText: { [defaultLang]: 'Get Started Today' },
     ctaLink: '#',
-    backgroundImage: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-cta-bg/1920/1080`,
+    backgroundImage: getRandomFixedImage('cta-background'), // Using fixed image
     theme: 'dark', // CTA sections often look good with a dark, impactful theme
 });
 
@@ -632,9 +636,9 @@ const createBlogSection = (companyName: Record<string, string>, theme: 'light' |
     enabled: true,
     title: { [defaultLang]: 'Latest News & Insights' },
     items: [
-        { id: generateId('bi1'), title: { [defaultLang]: 'The Future of AI in Web Design' }, excerpt: { [defaultLang]: 'Explore how artificial intelligence is revolutionizing the way we create and interact with websites.' }, author: { [defaultLang]: 'AI Expert' }, date: '2024-03-10', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-blog-ai/400/300` },
-        { id: generateId('bi2'), title: { [defaultLang]: '5 Tips for a Stunning Website' }, excerpt: { [defaultLang]: 'Discover key strategies to make your website stand out and attract more visitors.' }, author: { [defaultLang]: 'Design Guru' }, date: '2024-03-05', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-blog-tips/400/300` },
-        { id: generateId('bi3'), title: { [defaultLang]: 'SEO Essentials for Small Businesses' }, excerpt: { [defaultLang]: 'Learn the basics of Search Engine Optimization to improve your site\'s visibility.' }, author: { [defaultLang]: 'Marketing Pro' }, date: '2024-02-28', image: `https://picsum.photos/seed/${companyName[defaultLang].replace(/\s/g, '-')}-blog-seo/400/300` },
+        { id: generateId('bi1'), title: { [defaultLang]: 'The Future of AI in Web Design' }, excerpt: { [defaultLang]: 'Explore how artificial intelligence is revolutionizing the way we create and interact with websites.' }, author: { [defaultLang]: 'AI Expert' }, date: '2024-03-10', image: getRandomFixedImage('blog-post-image') }, // Using fixed image
+        { id: generateId('bi2'), title: { [defaultLang]: '5 Tips for a Stunning Website' }, excerpt: { [defaultLang]: 'Discover key strategies to make your website stand out and attract more visitors.' }, author: { [defaultLang]: 'Design Guru' }, date: '2024-03-05', image: getRandomFixedImage('blog-post-image') }, // Using fixed image
+        { id: generateId('bi3'), title: { [defaultLang]: 'SEO Essentials for Small Businesses' }, excerpt: { [defaultLang]: 'Learn the basics of Search Engine Optimization to improve your site\'s visibility.' }, author: { [defaultLang]: 'Marketing Pro' }, date: '2024-02-28', image: getRandomFixedImage('blog-post-image') }, // Using fixed image
     ],
     layout,
     theme,
@@ -657,7 +661,7 @@ const createFooterSection = (companyName: Record<string, string>, theme: 'light'
     id: generateId(`footer-${index}`),
     type: 'Footer',
     enabled: true,
-    // FIX: Wrapped string literal in a multilingual object
+    // FIX: Wrapped string literal in a multilingual object to match `Record<string, string>` type
     text: { [defaultLang]: `© ${new Date().getFullYear()} ${companyName[defaultLang]}. ${t('allRightsReserved')}` },
     socialLinks: {
         twitter: '#',
@@ -704,7 +708,7 @@ export const createDefaultSection = (
                 headline: { [defaultLang]: 'Unknown Section' },
                 subheadline: { [defaultLang]: 'This section type is not recognized.' },
                 ctaText: { [defaultLang]: 'Learn More' },
-                backgroundImage: 'https://picsum.photos/seed/unknown/1920/1080',
+                backgroundImage: getRandomFixedImage('hero-background'), // Using fixed image
                 theme: 'dark',
             } as HeroSection; // Cast to satisfy HeroSection, as it's the simplest complete section
     }

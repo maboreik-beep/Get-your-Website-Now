@@ -3,6 +3,8 @@ import { WebsiteContext } from '../App';
 import { Section, Page, Website } from '../types';
 import ImageGenerator from './ImageGenerator';
 import { Icon, generateId, ICONS, useLanguage } from '../constants'; // Import useLanguage
+import { getRandomFixedImage } from '../imageTemplates';
+
 
 const isListSection = (section: Section): section is Section & { items: any[] } | Section & { members: any[] } | Section & { timeline: any[] } => {
     return 'items' in section || 'members' in section || 'timeline' in section;
@@ -21,15 +23,15 @@ const createNewListItem = (sectionType: Section['type'], defaultLang: string, t:
     switch (sectionType) {
         // FIX: Wrapped string literals and t(...) calls in Record<string, string> for multilingual fields
         case 'Services': return { id, icon: 'Briefcase', name: { [defaultLang]: t('serviceName') }, description: { [defaultLang]: t('briefDescription') } };
-        case 'Products': return { id, name: { [defaultLang]: t('newProduct') }, description: { [defaultLang]: t('productDetails') }, price: '$0.00', image: 'https://picsum.photos/seed/newproduct/400/300' };
-        case 'Features': return { id, name: { [defaultLang]: t('newFeature') }, description: { [defaultLang]: t('featureDetails') }, image: 'https://picsum.photos/seed/newfeature/600/400' };
+        case 'Products': return { id, name: { [defaultLang]: t('newProduct') }, description: { [defaultLang]: t('productDetails') }, price: '$0.00', image: getRandomFixedImage('product-image') };
+        case 'Features': return { id, name: { [defaultLang]: t('newFeature') }, description: { [defaultLang]: t('featureDetails') }, image: getRandomFixedImage('feature-image') };
         case 'Pricing': return { id, plan: { [defaultLang]: t('newPlan') }, price: '0', period: { [defaultLang]: 'month' }, features: [{ [defaultLang]: t('feature1') }], featured: false };
-        case 'Clients': return { id, name: { [defaultLang]: t('newClient') }, logo: 'https://picsum.photos/seed/newclient/200/100' };
-        case 'Team': return { id, name: { [defaultLang]: t('newMember') }, title: { [defaultLang]: t('jobTitle') }, image: 'https://picsum.photos/seed/newmember/400/400', social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } };
-        case 'Gallery': return { id, image: 'https://picsum.photos/seed/newgallery/500/500', title: { [defaultLang]: t('newImage') }, category: { [defaultLang]: t('default') } };
-        case 'Testimonials': return { id, text: { [defaultLang]: t('glowingReview') }, author: { [defaultLang]: t('customer') }, role: { [defaultLang]: t('role') }, avatar: 'https://picsum.photos/seed/newavatar/100/100' };
+        case 'Clients': return { id, name: { [defaultLang]: t('newClient') }, logo: getRandomFixedImage('client-logo') };
+        case 'Team': return { id, name: { [defaultLang]: t('newMember') }, title: { [defaultLang]: t('jobTitle') }, image: getRandomFixedImage('team-member-avatar'), social: { twitter: '#', linkedin: '#', facebook: '#', instagram: '#' } };
+        case 'Gallery': return { id, image: getRandomFixedImage('gallery-item'), title: { [defaultLang]: t('newImage') }, category: { [defaultLang]: t('default') } };
+        case 'Testimonials': return { id, text: { [defaultLang]: t('glowingReview') }, author: { [defaultLang]: t('customer') }, role: { [defaultLang]: t('role') }, avatar: getRandomFixedImage('testimonial-avatar') };
         case 'FAQ': return { id, question: { [defaultLang]: t('newQuestion') }, answer: { [defaultLang]: t('answerToNewQuestion') } };
-        case 'Blog': return { id, title: { [defaultLang]: t('newBlogPost') }, excerpt: { [defaultLang]: t('briefSummary') }, author: { [defaultLang]: t('author') }, date: new Date().toISOString().split('T')[0], image: 'https://picsum.photos/seed/newpost/400/300' };
+        case 'Blog': return { id, title: { [defaultLang]: t('newBlogPost') }, excerpt: { [defaultLang]: t('briefSummary') }, author: { [defaultLang]: t('author') }, date: new Date().toISOString().split('T')[0], image: getRandomFixedImage('blog-post-image') };
         case 'Story': return { id: generateId('timeline-item'), year: '2024', event: { [defaultLang]: t('newEvent') } }; // Added ID for timeline item
         default: return { id };
     }
@@ -194,7 +196,7 @@ const SectionFormRenderer: React.FC<{ section: Section }> = ({ section }) => {
                                         <>
                                             <option value="grid">Grid</option>
                                             <option value="carousel">Carousel</option>
-                                        </>
+                                        </F>
                                     )}
                                     {section.type === 'Features' && (
                                         <>
@@ -206,7 +208,7 @@ const SectionFormRenderer: React.FC<{ section: Section }> = ({ section }) => {
                                         <>
                                             <option value="grid">Grid</option>
                                             <option value="carousel">Carousel</option>
-                                        </F>
+                                        </>
                                     )}
                                     {section.type === 'Gallery' && (
                                         <>
